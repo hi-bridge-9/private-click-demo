@@ -6,7 +6,6 @@ services:
       context: ..
       dockerfile: ./build/deliver.Dockerfile
     container_name: delivery
-    tty: true
     networks:
       app_net:
         ipv4_address: 172.16.238.10
@@ -20,7 +19,6 @@ services:
       context: ..
       dockerfile: ./build/publisher.Dockerfile
     container_name: publisher
-    tty: true
     networks:
       app_net:
         ipv4_address: 172.16.238.20
@@ -34,7 +32,6 @@ services:
       context: ..
       dockerfile: ./build/advertiser.Dockerfile
     container_name: advertiser
-    tty: true
     networks:
       app_net:
         ipv4_address: 172.16.238.30
@@ -53,9 +50,9 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
-      - ./infra/db/data:/var/lib/mysql
-      - ./infra/db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./infra/db/sql:/docker-entrypoint-initdb.d
+      - ../infra/db/data:/var/lib/mysql
+      - ../infra/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ../infra/db/sql:/docker-entrypoint-initdb.d
     networks:
       app_net:
         ipv4_address: 172.16.238.40
