@@ -1,0 +1,73 @@
+version : '3.4'
+services:
+  # 広告配信業者
+  delivery:
+    build:
+      context: ..
+      dockerfile: ./build/deliver.Dockerfile
+    container_name: delivery
+    tty: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+  # 配信面
+  publisher:
+    build:
+      context: ..
+      dockerfile: ./build/publisher.Dockerfile
+    container_name: publisher
+    tty: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.20
+    expose:
+      - 80
+    depends_on:
+      - db
+  # 広告主面
+  advertiser:
+    build:
+      context: ..
+      dockerfile: ./build/advertiser.Dockerfile
+    container_name: advertiser
+    tty: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.30
+    expose:
+      - 80
+    depends_on:
+      - db
+  # DB
+  db:
+    container_name: db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./infra/db/data:/var/lib/mysql
+      - ./infra/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./infra/db/sql:/docker-entrypoint-initdb.d
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.40
+    ports:
+    - 3306:3306
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       # 172.16.238.0 ~ 172.16.238.255
+       - subnet: 172.16.238.0/24
+         gateway: 172.16.238.1
