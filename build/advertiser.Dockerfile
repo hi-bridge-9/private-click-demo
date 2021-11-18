@@ -9,4 +9,5 @@ RUN go build -o /advertiser/main
 
 FROM golang:1.15.7-alpine
 COPY --from=build /advertiser/main /main
+COPY web/html/advertiser .
 CMD [ "/main" ]
