@@ -14,7 +14,7 @@ $ sudo vi /etc/hosts
 
 ```sh:/etc/hosts
 # 以下の情報を追記する
-127.0.0.2       delivery.test
+127.0.0.2       ad-deliver.test
 127.0.0.3       publisher.test
 127.0.0.4       advertiser.test
 ```
