@@ -10,7 +10,7 @@ services:
       app_net:
         ipv4_address: 172.16.238.10
     ports:
-      - '127.0.0.1:80:80'
+      - '127.0.0.2:80:80'
     depends_on:
       - db
   # 配信面
@@ -23,7 +23,7 @@ services:
       app_net:
         ipv4_address: 172.16.238.20
     ports:
-      - '127.0.0.2:80:80'
+      - '127.0.0.3:80:80'
   # 広告主面
   advertiser:
     build:
@@ -34,7 +34,7 @@ services:
       app_net:
         ipv4_address: 172.16.238.30
     ports:
-      - '127.0.0.3:80:80'
+      - '127.0.0.4:80:80'
 
   # DB
   db:
