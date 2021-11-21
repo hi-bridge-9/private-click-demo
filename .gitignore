@@ -16,3 +16,6 @@
 
 # idea
 .vscode
+
+# test log
+infra/db/data/
