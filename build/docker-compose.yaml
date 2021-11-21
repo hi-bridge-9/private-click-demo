@@ -1,29 +1,31 @@
 version: "3.4"
 services:
   # 広告配信業者
-  delivery:
+  ad_deliver:
     build:
       context: ..
-      dockerfile: ./build/deliver.Dockerfile
-    container_name: delivery
+      dockerfile: ./build/ad_deliver.Dockerfile
+    container_name: ad_deliver
     networks:
-      app_net:
-        ipv4_address: 172.16.238.10
+      - app_net
     ports:
       - '127.0.0.2:80:80'
     depends_on:
       - db
-  # 配信面
+
+  # メディア
   publisher:
     build:
       context: ..
       dockerfile: ./build/publisher.Dockerfile
     container_name: publisher
+    environment:
+      PORT: 80
     networks:
-      app_net:
-        ipv4_address: 172.16.238.20
+      - app_net
     ports:
       - '127.0.0.3:80:80'
+
   # 広告主面
   advertiser:
     build:
@@ -31,8 +33,7 @@ services:
       dockerfile: ./build/advertiser.Dockerfile
     container_name: advertiser
     networks:
-      app_net:
-        ipv4_address: 172.16.238.30
+      - app_net
     ports:
       - '127.0.0.4:80:80'
 
@@ -51,11 +52,11 @@ services:
       - ../infra/db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ../infra/db/sql:/docker-entrypoint-initdb.d
     networks:
-      app_net:
-        ipv4_address: 172.16.238.40
+      - app_net
     ports:
-      - '3306:3306'
+      - '127.0.0.1:3306:3306'
 
+# ネットワーク
 networks:
   app_net:
     ipam:

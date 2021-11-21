@@ -23,7 +23,7 @@ $ sudo vi /etc/hosts
 
 ```sh:
 $ cd build
-$ docker-compose up -d
+$ docker-compose up -d -build
 ```
 
 4. ブラウザで「[http://publisher.test/top](http://publisher.test/top)」にアクセスして、広告のクリックなどをしてみる
