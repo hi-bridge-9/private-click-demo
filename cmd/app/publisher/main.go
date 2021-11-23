@@ -16,20 +16,30 @@ var (
 )
 
 func main() {
+	// リクエスト時のパスとハンドラーのマッピング
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
-		// 広告配信面
-		"/top-page":                         topPageHandler,
+		// 広告配信面の返却
+		"/top-page/": topPageHandler,
 
-		// Private Click Measurement
-		// 基本機能
-		wellKnown + "/trigger-attribution/": triggerHandler,
-		wellKnown + "/report-attribution/":  reportHandler,
+		// CVトリガーリダイレクト実行（CVタグからのリクエスト）
+		"/trigger/": triggerHandler,
 
-		// （任意）アドフラウド防止機能
-		wellKnown + "/get-token-public-key/":  publicTokenHandler,
+		// CVトリガーリダイレクトに対して画像の返却
+		wellKnown + "/trigger-attribution/": beaconHandler,
+
+		// レポートの受け取り
+		wellKnown + "/report-attribution/": reportHandler,
+
+		// ---------（任意）アドフラウド防止機能---------
+		// 公開鍵の返却
+		wellKnown + "/get-token-public-key/": publicTokenHandler,
+
+		// ブラインド署名の実行、署名の返却
 		wellKnown + "/sign-unlinkable-token/": blindSignHandler,
+		// -------------------------------------
 	}
 
+	// webサーバー起動
 	ws := server.NewWebServer(handlerMap)
 	if err := ws.Start(port); err != nil {
 		log.Fatal(err)

@@ -19,11 +19,20 @@ $ sudo vi /etc/hosts
 127.0.0.4       advertiser.test
 ```
 
-3. 広告配信業者、メディア、広告主サイトのコンテナを立ち上げる
+3. クリック詐欺防止機能で利用するRSAキーペアを生成する
 
 ```sh:
-$ cd build
+$ cd key_pair
+$ openssl genrsa 2048 > private-key.pem
+$ openssl rsa -in private-key.pem -pubout -out public-key.pem
+```
+
+
+4. 広告配信業者、メディア、広告主サイトのコンテナを立ち上げる
+
+```sh:
+$ cd ../build
 $ docker-compose up -d -build
 ```
 
-4. ブラウザで「[http://publisher.test/top](http://publisher.test/top)」にアクセスして、広告のクリックなどをしてみる
+5. ブラウザで「[http://publisher.test/top-page/](http://publisher.test/top)」にアクセスして、広告のクリックなどをしてみる

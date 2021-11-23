@@ -8,4 +8,5 @@ RUN go build -o /temp/main
 
 FROM golang:1.15.7-alpine
 COPY --from=build /temp/main /main
+COPY key_pair ./
 CMD [ "/main" ]
