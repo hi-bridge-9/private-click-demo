@@ -21,4 +21,4 @@
 infra/db/data/
 
 # rsa key pair
-key_pair/*.pem
+*.pem
