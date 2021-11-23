@@ -30,6 +30,7 @@ func main() {
 		// レポートの受け取り
 		wellKnown + "/report-attribution/": reportHandler,
 
+		
 		// ---------（任意）アドフラウド防止機能---------
 		// 公開鍵の返却
 		wellKnown + "/get-token-public-key/": publicTokenHandler,

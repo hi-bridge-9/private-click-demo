@@ -8,6 +8,7 @@ import (
 )
 
 func topPageHandler(w http.ResponseWriter, r *http.Request) {
+
 	// レスポンス
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
