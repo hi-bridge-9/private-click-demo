@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,17 +9,19 @@ import (
 )
 
 var (
-	port = os.Getenv("PORT")
+	port = os.Getenv("WEB_SERVER_PORT")
 
 	// Private Click Measurementを利用するためのパス
 	wellKnown = "/.well-known/private-click-measurement"
 )
 
-// SSP起動！！（トリガーオン的な）
 func main() {
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
-		// 基本機能
+		// 広告配信面
 		"/top-page":                         topPageHandler,
+
+		// Private Click Measurement
+		// 基本機能
 		wellKnown + "/trigger-attribution/": triggerHandler,
 		wellKnown + "/report-attribution/":  reportHandler,
 
@@ -34,25 +35,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-func topPageHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
-}
-
-func triggerHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
-}
-
-func reportHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
-}
-
-func publicTokenHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
-}
-
-func blindSignHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
-}
-
-
