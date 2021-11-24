@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -10,13 +10,17 @@ import (
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/val"
 )
 
-func topPageHandler(w http.ResponseWriter, r *http.Request) {
+var (
+	wellKnown = "/.well-known/private-click-measurement"
+)
+
+func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 }
 
-func triggerHandler(w http.ResponseWriter, r *http.Request) {
+func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 	param := strings.TrimPrefix(r.URL.Path, "/cv-trigger/")
 	li := strings.Split(param, "/")
 
@@ -59,7 +63,7 @@ func triggerHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 }
 
-func beaconHandler(w http.ResponseWriter, r *http.Request) {
+func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 	param := strings.TrimPrefix(r.URL.Path, wellKnown+"/trigger-attribution")
 	li := filepath.SplitList(param)
 	fmt.Println(li)
@@ -70,19 +74,19 @@ func beaconHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func reportHandler(w http.ResponseWriter, r *http.Request) {
+func ReportHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	w.WriteHeader(http.StatusOK)
 }
 
-func publicTokenHandler(w http.ResponseWriter, r *http.Request) {
+func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("public token"))
 	w.WriteHeader(http.StatusOK)
 }
 
-func blindSignHandler(w http.ResponseWriter, r *http.Request) {
+func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("unlinkable token"))

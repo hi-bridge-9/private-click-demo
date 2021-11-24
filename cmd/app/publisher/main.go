@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/handler"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/server"
 )
 
@@ -19,23 +20,23 @@ func main() {
 	// リクエスト時のパスとハンドラーのマッピング
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
 		// 広告配信面の返却
-		"/top-page/": topPageHandler,
+		"/top-page/": handler.TopPageHandler,
 
 		// CVトリガーリダイレクト実行（CVタグからのリクエスト）
-		"/cv-trigger/": triggerHandler,
+		"/cv-trigger/": handler.TriggerHandler,
 
 		// CVトリガーリダイレクトに対して画像の返却
-		wellKnown + "/trigger-attribution/": beaconHandler,
+		wellKnown + "/trigger-attribution/": handler.BeaconHandler,
 
 		// レポートの受け取り
-		wellKnown + "/report-attribution/": reportHandler,
+		wellKnown + "/report-attribution/": handler.ReportHandler,
 
 		// ---------（任意）アドフラウド防止機能---------
 		// 公開鍵の返却
-		wellKnown + "/get-token-public-key/": publicTokenHandler,
+		wellKnown + "/get-token-public-key/": handler.PublicTokenHandler,
 
 		// ブラインド署名の実行、署名の返却
-		wellKnown + "/sign-unlinkable-token/": blindSignHandler,
+		wellKnown + "/sign-unlinkable-token/": handler.BlindSignHandler,
 		// -------------------------------------
 	}
 

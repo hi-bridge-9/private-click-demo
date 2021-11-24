@@ -1,5 +1,5 @@
 // All variables and functions in this file are carbon copy-paste from the standard library crypto/rsa
-package main
+package blind_sign
 
 import (
 	"crypto/rand"
