@@ -16,7 +16,14 @@ var (
 )
 
 func Connect() *sql.DB {
-	conf := fmt.Sprintf("%s:%s@%s(%s:%s)/%s?charset=utf8mb4", user, pass, protocol, ip, port, name)
+	conf := fmt.Sprintf("%s:%s@%s(%s:%s)/%s?charset=utf8mb4",
+		user,
+		pass,
+		protocol,
+		ip,
+		port,
+		name)
+
 	db, err := sql.Open("mysql", conf)
 	if err != nil {
 		panic(err.Error())

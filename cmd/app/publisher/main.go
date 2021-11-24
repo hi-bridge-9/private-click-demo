@@ -22,7 +22,7 @@ func main() {
 		"/top-page/": topPageHandler,
 
 		// CVトリガーリダイレクト実行（CVタグからのリクエスト）
-		"/trigger/": triggerHandler,
+		"/cv-trigger/": triggerHandler,
 
 		// CVトリガーリダイレクトに対して画像の返却
 		wellKnown + "/trigger-attribution/": beaconHandler,
@@ -30,7 +30,6 @@ func main() {
 		// レポートの受け取り
 		wellKnown + "/report-attribution/": reportHandler,
 
-		
 		// ---------（任意）アドフラウド防止機能---------
 		// 公開鍵の返却
 		wellKnown + "/get-token-public-key/": publicTokenHandler,
