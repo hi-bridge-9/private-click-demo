@@ -57,18 +57,18 @@ func GenerateInsertReportQuery(r *http.Request) string {
 		r.Host)
 }
 
-func GenerateInsertPublicTokenQuery(r *http.Request) string {
+func GenerateInsertPublicTokenQuery(pt string, r *http.Request) string {
 	return fmt.Sprintf("NSERT INTO publisher_public_token("+
 		"token_public_key,"+
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s')",
-		r.FormValue("source_engagement_type"),
+		pt,
 		r.Referer(),
 		r.Host)
 }
 
-func GenerateInsertUnlinkableTokenQuery(r *http.Request) string {
+func GenerateInsertUnlinkableTokenQuery(ut string, r *http.Request) string {
 	return fmt.Sprintf("NSERT INTO publisher_unlinkable_token("+
 		"source_engagement_type,"+
 		"source_nonce,"+
@@ -77,12 +77,12 @@ func GenerateInsertUnlinkableTokenQuery(r *http.Request) string {
 		"unlinkable_token,"+
 		"refere,"+
 		"host"+
-		")VALUES('%s','%s','%s',%s,'%s','%s')",
+		")VALUES('%s','%s','%s',%s,'%s','%s','%s')",
 		r.FormValue("source_engagement_type"),
 		r.FormValue("source_nonce"),
 		r.FormValue("source_unlinkable_token"),
 		r.FormValue("version"),
-		r.FormValue("unlinkable_token"),
+		ut,
 		r.Referer(),
 		r.Host)
 }

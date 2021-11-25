@@ -117,8 +117,8 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
-	// 公開鍵を取得、BASE64URLエンコード、JSON形式にして[]byte型に変換
-	var publicToken []byte
+	// 公開鍵を取得、BASE64URLエンコード、JSON形式の文字列を出力
+	var publicToken string
 
 	db, err := database.Connect()
 	if err != nil {
@@ -127,7 +127,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	insert := database.GenerateInsertPublicTokenQuery(r)
+	insert := database.GenerateInsertPublicTokenQuery(publicToken, r)
 	_, err = db.Exec(insert)
 	if err != nil {
 		log.Printf("Failed public token insert to DB: %v", err)
@@ -139,13 +139,13 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	log.Println("Success return public token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(publicToken)
+	w.Write([]byte(publicToken))
 	w.WriteHeader(http.StatusOK)
 }
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
-	// 署名を出力、BASE64URLエンコード、JSON形式にして[]byte型に変換
-	var signature []byte
+	// 署名を出力、BASE64URLエンコード、JSON形式の文字列を出力
+	var signature string
 
 	db, err := database.Connect()
 	if err != nil {
@@ -154,7 +154,7 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	insert := database.GenerateInsertUnlinkableTokenQuery(r)
+	insert := database.GenerateInsertUnlinkableTokenQuery(signature, r)
 	_, err = db.Exec(insert)
 	if err != nil {
 		log.Printf("Failed unlinkable token insert to DB: %v", err)
@@ -166,6 +166,6 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
 	log.Println("Success return unlinkable token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(signature)
+	w.Write([]byte(signature))
 	w.WriteHeader(http.StatusOK)
 }
