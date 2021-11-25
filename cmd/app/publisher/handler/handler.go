@@ -2,22 +2,38 @@ package handler
 
 import (
 	"fmt"
+	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"path/filepath"
+	"os"
 	"strings"
 
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/val"
 )
 
 var (
-	wellKnown = "/.well-known/private-click-measurement"
+	topPagePath = os.Getenv("TOP_PAGE_FILE_PATH")
+	beaconPath  = os.Getenv("BEACON_FILE_PATH")
+	wellKnown   = "/.well-known/private-click-measurement"
 )
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	// レスポンス
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
+	t, err := template.ParseFiles(topPagePath)
+	if err != nil {
+		log.Printf("Ivalid template file path: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err := t.Execute(w, nil); err != nil {
+		log.Printf("Failed template execute: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	log.Println("Success return html template")
 }
 
 func TriggerHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +55,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 				li[0],
 				li[1])
 
+			log.Println("Success execute conversion trigger(2)")
 			w.Header().Add("Location", location)
 			w.WriteHeader(http.StatusFound)
 			return
@@ -53,42 +70,102 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 				wellKnown,
 				li[0])
 
+			log.Println("Success execute conversion trigger(1)")
 			w.Header().Add("Location", location)
 			w.WriteHeader(http.StatusFound)
 			return
 		}
 		log.Printf("Ivalid parameter value: trigger-data=%s", li[0])
 	}
-
 	w.WriteHeader(http.StatusNotFound)
 }
 
 func BeaconHandler(w http.ResponseWriter, r *http.Request) {
-	param := strings.TrimPrefix(r.URL.Path, wellKnown+"/trigger-attribution")
-	li := filepath.SplitList(param)
-	fmt.Println(li)
+	beacon, err := ioutil.ReadFile(beaconPath)
+	if err != nil {
+		log.Printf("Ivalid beacon file path: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// レスポンス
+	log.Println("Success return beacon")
 	w.Header().Set("Content-Type", "image/gif")
-	w.Write([]byte("gif beacon"))
+	w.Write(beacon)
 	w.WriteHeader(http.StatusOK)
 }
 
 func ReportHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := database.Connect()
+	if err != nil {
+		log.Printf("Failed connect to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	insert := database.GenerateInsertReportQuery(r)
+	_, err = db.Exec(insert)
+	if err != nil {
+		log.Printf("Failed report data insert to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	// レスポンス
+	log.Println("Success report data insert to DB")
 	w.WriteHeader(http.StatusOK)
 }
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
+	// 公開鍵を取得、BASE64URLエンコード、JSON形式にして[]byte型に変換
+	var publicToken []byte
+
+	db, err := database.Connect()
+	if err != nil {
+		log.Printf("Failed connect to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	insert := database.GenerateInsertPublicTokenQuery(r)
+	_, err = db.Exec(insert)
+	if err != nil {
+		log.Printf("Failed public token insert to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	log.Println("Success public token insert to DB")
+
 	// レスポンス
+	log.Println("Success return public token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("public token"))
+	w.Write(publicToken)
 	w.WriteHeader(http.StatusOK)
 }
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
+	// 署名を出力、BASE64URLエンコード、JSON形式にして[]byte型に変換
+	var signature []byte
+
+	db, err := database.Connect()
+	if err != nil {
+		log.Printf("Failed connect to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	insert := database.GenerateInsertUnlinkableTokenQuery(r)
+	_, err = db.Exec(insert)
+	if err != nil {
+		log.Printf("Failed unlinkable token insert to DB: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	log.Println("Success unlinkable token insert to DB")
+
 	// レスポンス
+	log.Println("Success return unlinkable token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("unlinkable token"))
+	w.Write(signature)
 	w.WriteHeader(http.StatusOK)
 }
