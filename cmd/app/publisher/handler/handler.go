@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database"
-	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/val"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
 )
 
 var (
@@ -48,7 +48,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 
 	var location string
 	if len(li) == 2 {
-		if val.IsValidTriggerDataAndPriority(li[0], li[1]) {
+		if validation.IsValidTriggerDataAndPriority(li[0], li[1]) {
 			location = fmt.Sprintf("http://%s/%s/trigger-attribution/%s/%s",
 				r.Host,
 				wellKnown,
@@ -64,7 +64,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(li) == 1 {
-		if val.IsValidTriggerData(li[0]) {
+		if validation.IsValidTriggerData(li[0]) {
 			location = fmt.Sprintf("http://%s/%s/trigger-attribution/%s",
 				r.Host,
 				wellKnown,
