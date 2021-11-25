@@ -102,6 +102,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer db.Close()
 
 	insert := database.GenerateInsertReportQuery(r)
 	_, err = db.Exec(insert)
@@ -126,6 +127,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer db.Close()
 
 	insert := database.GenerateInsertPublicTokenQuery(publicToken, r)
 	_, err = db.Exec(insert)
@@ -153,6 +155,7 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer db.Close()
 
 	insert := database.GenerateInsertUnlinkableTokenQuery(signature, r)
 	_, err = db.Exec(insert)
