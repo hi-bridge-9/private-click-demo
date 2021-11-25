@@ -20,7 +20,10 @@ var (
 )
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
-	// レスポンス
+	if topPagePath == "" {
+		topPagePath = "../../../web/html/publisher/top.html"
+	}
+
 	t, err := template.ParseFiles(topPagePath)
 	if err != nil {
 		log.Printf("Ivalid template file path: %v", err)
@@ -81,6 +84,10 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BeaconHandler(w http.ResponseWriter, r *http.Request) {
+	if beaconPath == "" {
+		beaconPath = "../../../web/image/beacon.gif"
+	}
+
 	beacon, err := ioutil.ReadFile(beaconPath)
 	if err != nil {
 		log.Printf("Ivalid beacon file path: %v", err)
@@ -88,7 +95,6 @@ func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// レスポンス
 	log.Println("Success return beacon")
 	w.Header().Set("Content-Type", "image/gif")
 	w.Write(beacon)
@@ -112,7 +118,6 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// レスポンス
 	log.Println("Success report data insert to DB")
 	w.WriteHeader(http.StatusOK)
 }
@@ -138,7 +143,6 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Success public token insert to DB")
 
-	// レスポンス
 	log.Println("Success return public token")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(publicToken))
@@ -166,7 +170,6 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Success unlinkable token insert to DB")
 
-	// レスポンス
 	log.Println("Success return unlinkable token")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(signature))
