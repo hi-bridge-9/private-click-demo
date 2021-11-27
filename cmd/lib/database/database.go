@@ -27,7 +27,7 @@ func Connect() (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", conf)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Invalid database config infomation: %w", err)
 	}
 	return db, nil
 }

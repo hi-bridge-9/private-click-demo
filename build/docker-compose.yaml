@@ -20,7 +20,10 @@ services:
       dockerfile: ./build/publisher.Dockerfile
     container_name: publisher
     environment:
-      TOP_PAGE_FILE_PATH: ./top.html
+      TOP_PAGE_FILE_PATH: ./web/top.html
+      BEACON_FILE_PATH: .web/beacon.gif
+      PUBLIC_TOKEN_PEM_PATH: ./key-pair/publick-key.pem
+      PURIVATE_TOKEN_PEM_PATH: ./key-pair/private-key.pem
       BEACON_FILE_PATH: ./beacon.gif
       WEB_SERVER_PORT: 80
       MYSQL_DATABASE: database
@@ -33,6 +36,8 @@ services:
       - app_net
     ports:
       - '127.0.0.3:80:80'
+    depends_on:
+      - db
 
   # 広告主面
   advertiser:
@@ -40,10 +45,23 @@ services:
       context: ..
       dockerfile: ./build/advertiser.Dockerfile
     container_name: advertiser
+    environment:
+      LP_PAGE_FILE_PATH: ./lp.html
+      # CV_PAGE_FILE_PATH: ./cv
+      BEACON_FILE_PATH: ./beacon.gif
+      WEB_SERVER_PORT: 80
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_IP: 127.0.0.1
+      MYSQL_PORT: 3306
+      MYSQL_PROTOCOL: tcp
     networks:
       - app_net
     ports:
       - '127.0.0.4:80:80'
+    depends_on:
+      - db
 
   # DB
   db:

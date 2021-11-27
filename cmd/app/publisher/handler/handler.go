@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/base64"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -9,6 +10,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/blind_sign"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/public_token"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
 )
@@ -124,7 +127,12 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	// 公開鍵を取得、BASE64URLエンコード、JSON形式の文字列を出力
-	var publicToken string
+	token, err := public_token.Generate()
+	if err != nil {
+		log.Printf("Failed generate public token: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	db, err := database.Connect()
 	if err != nil {
@@ -134,7 +142,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	insert := database.GenerateInsertPublicTokenQuery(publicToken, r)
+	insert := database.GenerateInsertPublicTokenQuery(token, r)
 	_, err = db.Exec(insert)
 	if err != nil {
 		log.Printf("Failed public token insert to DB: %v", err)
@@ -143,15 +151,25 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Success public token insert to DB")
 
+	resp := fmt.Sprintf("{\"token_public_key\": \"%s\"}", token)
+
 	log.Println("Success return public token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(publicToken))
+	w.Write([]byte(resp))
 	w.WriteHeader(http.StatusOK)
 }
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
-	// 署名を出力、BASE64URLエンコード、JSON形式の文字列を出力
-	var signature string
+	msg, err := base64.RawURLEncoding.DecodeString(
+		r.FormValue("source_unlinkable_token"))
+
+	if err != nil {
+		log.Printf("Failed base64URL decode source token: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	signature, err := blind_sign.Execute(msg)
 
 	db, err := database.Connect()
 	if err != nil {
@@ -170,8 +188,10 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Success unlinkable token insert to DB")
 
+	resp := fmt.Sprintf("{\"unlinkable_token\": \"%s\"}", signature)
+
 	log.Println("Success return unlinkable token")
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(signature))
+	w.Write([]byte(resp))
 	w.WriteHeader(http.StatusOK)
 }
