@@ -12,7 +12,6 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"golang.org/x/xerrors"
 )
 
 var (
@@ -64,7 +63,7 @@ func blindSign(msg []byte, key *rsa.PrivateKey) ([]byte, error) {
 func generatePrivateKey(pf []byte) (key *rsa.PrivateKey, err error) {
 	block, _ := pem.Decode(pf)
 	if block == nil {
-		return nil, xerrors.New("invalid private key data")
+		return nil, errors.New("invalid private key data")
 	}
 
 	if block.Type == "RSA PRIVATE KEY" {

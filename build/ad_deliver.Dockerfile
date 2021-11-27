@@ -4,7 +4,7 @@ WORKDIR /temp
 COPY cmd/app/deliver ./
 COPY cmd/go.mod cmd/go.sum ./
 RUN go mod download
-RUN go build -o /temp/main
+RUN go build -o ./main
 
 FROM golang:1.15.7-alpine
 COPY --from=build /temp/main /main

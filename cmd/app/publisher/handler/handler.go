@@ -35,7 +35,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := t.Execute(w, nil); err != nil {
-		log.Printf("Failed template execute: %v", err)
+		log.Printf("Failed return template file: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -126,7 +126,6 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
-	// 公開鍵を取得、BASE64URLエンコード、JSON形式の文字列を出力
 	token, err := public_token.Generate()
 	if err != nil {
 		log.Printf("Failed generate public token: %v", err)
