@@ -11,7 +11,7 @@ type Report struct {
 	SecretTokenSignature string `json:"source_secret_token_signature"`
 }
 
-type Sign struct {
+type Source struct {
 	EngagementType string `json:"source_engagement_type"`
 	Nonce          string `json:"source_nonce"`
 	SourceToken    string `json:"source_unlinkable_token"`

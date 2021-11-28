@@ -104,7 +104,7 @@ func generateInsertPublicTokenQuery(pt string, referer, host string) string {
 		host)
 }
 
-func InsertUnlinkableToken(s *model.Sign, ut, referer, host string) error {
+func InsertUnlinkableToken(s *model.Source, ut, referer, host string) error {
 	db, err := connect()
 	if err != nil {
 		return fmt.Errorf("Failed connect to DB: %w", err)
@@ -121,7 +121,7 @@ func InsertUnlinkableToken(s *model.Sign, ut, referer, host string) error {
 	return nil
 }
 
-func generateInsertUnlinkableTokenQuery(s *model.Sign, ut, referer, host string) string {
+func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host string) string {
 	return fmt.Sprintf("INSERT INTO publisher_unlinkable_token("+
 		"source_engagement_type,"+
 		"source_nonce,"+

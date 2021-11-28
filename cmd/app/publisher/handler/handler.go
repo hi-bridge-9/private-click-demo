@@ -145,6 +145,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("Success receive report")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -183,14 +184,14 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var sign *model.Sign
-	if err := json.NewDecoder(r.Body).Decode(sign); err != nil {
+	var source *model.Source
+	if err := json.NewDecoder(r.Body).Decode(source); err != nil {
 		log.Printf("Invalid request body format: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	msg, err := base64.RawURLEncoding.DecodeString(sign.SourceToken)
+	msg, err := base64.RawURLEncoding.DecodeString(source.SourceToken)
 	if err != nil {
 		log.Printf("Failed base64URL decode source token: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -204,7 +205,7 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := database.InsertUnlinkableToken(sign, signature, r.Referer(), r.Host); err != nil {
+	if err := database.InsertUnlinkableToken(source, signature, r.Referer(), r.Host); err != nil {
 		log.Printf("Failed insert report to DB: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
