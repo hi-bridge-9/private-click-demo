@@ -45,4 +45,5 @@ func main() {
 	if err := ws.Start(port); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Web server start")
 }

@@ -19,6 +19,7 @@ import (
 var (
 	topPagePath = os.Getenv("TOP_PAGE_FILE_PATH")
 	beaconPath  = os.Getenv("BEACON_FILE_PATH")
+	AdDeliver   = os.Getenv("AD_DELIVER_DOMAIN")
 	wellKnown   = "/.well-known/private-click-measurement"
 )
 
@@ -34,7 +35,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := t.Execute(w, nil); err != nil {
+	if err := t.Execute(w, AdDeliver); err != nil {
 		log.Printf("Failed return template file: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
