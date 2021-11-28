@@ -3,8 +3,10 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
+	"log"
 	"os"
+
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database/model"
 )
 
 var (
@@ -16,7 +18,7 @@ var (
 	name     = os.Getenv("MYSQL_DATABASE")
 )
 
-func Connect() (*sql.DB, error) {
+func connect() (*sql.DB, error) {
 	conf := fmt.Sprintf("%s:%s@%s(%s:%s)/%s?charset=utf8mb4",
 		user,
 		pass,
@@ -32,8 +34,25 @@ func Connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func GenerateInsertReportQuery(r *http.Request) string {
-	return fmt.Sprintf("NSERT INTO publisher_report("+
+func InsertReport(r *model.Report, referer, host string) error {
+	db, err := connect()
+	if err != nil {
+		return fmt.Errorf("Failed connect to DB: %w", err)
+	}
+	defer db.Close()
+
+	insert := generateInsertReportQuery(r, referer, host)
+	_, err = db.Exec(insert)
+	if err != nil {
+		return fmt.Errorf("Failed report data insert to DB: %w", err)
+	}
+
+	log.Println("Success report data insert to DB")
+	return nil
+}
+
+func generateInsertReportQuery(r *model.Report, referer, host string) string {
+	return fmt.Sprintf("INSERT INTO publisher_report("+
 		"source_engagement_type,"+
 		"source_site,"+
 		"source_id,"+
@@ -44,32 +63,66 @@ func GenerateInsertReportQuery(r *http.Request) string {
 		"secret_token_signature,"+
 		"refere,"+
 		"host"+
-		")VALUES('%s','%s',%s,'%s',%s,%s,'%s','%s','%s','%s')",
-		r.FormValue("source_engagement_type"),
-		r.FormValue("source_site"),
-		r.FormValue("source_id"),
-		r.FormValue("attributed_on_site"),
-		r.FormValue("trigger_data"),
-		r.FormValue("version"),
-		r.FormValue("secret_token"),
-		r.FormValue("secret_token_signature"),
-		r.Referer(),
-		r.Host)
+		")VALUES('%s','%s',%d,'%s',%d,%d,'%s','%s','%s','%s')",
+		r.EngagementType,
+		r.SourceSite,
+		r.SourceId,
+		r.AttributedOnSite,
+		r.TriggerData,
+		r.Version,
+		r.SecretToken,
+		r.SecretTokenSignature,
+		referer,
+		host)
 }
 
-func GenerateInsertPublicTokenQuery(pt string, r *http.Request) string {
-	return fmt.Sprintf("NSERT INTO publisher_public_token("+
+func InsertPublicToken(pt string, referer, host string) error {
+	db, err := connect()
+	if err != nil {
+		return fmt.Errorf("Failed connect to DB: %w", err)
+	}
+	defer db.Close()
+
+	insert := generateInsertPublicTokenQuery(pt, referer, host)
+	_, err = db.Exec(insert)
+	if err != nil {
+		return fmt.Errorf("Failed public token insert to DB: %w", err)
+	}
+
+	log.Println("Success public token insert to DB")
+	return nil
+}
+
+func generateInsertPublicTokenQuery(pt string, referer, host string) string {
+	return fmt.Sprintf("INSERT INTO publisher_public_token("+
 		"token_public_key,"+
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s')",
 		pt,
-		r.Referer(),
-		r.Host)
+		referer,
+		host)
 }
 
-func GenerateInsertUnlinkableTokenQuery(ut string, r *http.Request) string {
-	return fmt.Sprintf("NSERT INTO publisher_unlinkable_token("+
+func InsertUnlinkableToken(s *model.Sign, ut, referer, host string) error {
+	db, err := connect()
+	if err != nil {
+		return fmt.Errorf("Failed connect to DB: %w", err)
+	}
+	defer db.Close()
+
+	insert := generateInsertUnlinkableTokenQuery(s, ut, referer, host)
+	_, err = db.Exec(insert)
+	if err != nil {
+		return fmt.Errorf("Failed unlinkable token insert to DB: %w", err)
+	}
+
+	log.Println("Success unlinkable token insert to DB")
+	return nil
+}
+
+func generateInsertUnlinkableTokenQuery(s *model.Sign, ut, referer, host string) string {
+	return fmt.Sprintf("INSERT INTO publisher_unlinkable_token("+
 		"source_engagement_type,"+
 		"source_nonce,"+
 		"source_unlinkable_token,"+
@@ -77,12 +130,12 @@ func GenerateInsertUnlinkableTokenQuery(ut string, r *http.Request) string {
 		"unlinkable_token,"+
 		"refere,"+
 		"host"+
-		")VALUES('%s','%s','%s',%s,'%s','%s','%s')",
-		r.FormValue("source_engagement_type"),
-		r.FormValue("source_nonce"),
-		r.FormValue("source_unlinkable_token"),
-		r.FormValue("version"),
+		")VALUES('%s','%s','%s',%d,'%s','%s','%s')",
+		s.EngagementType,
+		s.Nonce,
+		s.SourceToken,
+		s.Version,
 		ut,
-		r.Referer(),
-		r.Host)
+		referer,
+		host)
 }
