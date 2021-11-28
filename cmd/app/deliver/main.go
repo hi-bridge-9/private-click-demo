@@ -10,10 +10,9 @@ import (
 )
 
 var (
-	port = os.Getenv("WEB_SERVER_PORTRT")
+	port = os.Getenv("WEB_SERVER_PORT")
 )
 
-// SSP起動！！（トリガーオン的な）
 func main() {
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
 		"/delivery":   handler.DeliveryHandler,
