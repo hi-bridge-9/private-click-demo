@@ -15,8 +15,13 @@ var (
 
 func main() {
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
-		"/delivery":   handler.DeliveryHandler,
-		"/click":      handler.ClickHandler,
+		// 広告情報の返却
+		"/delivery": handler.DeliveryHandler,
+
+		// 広告遷移先へのリダイレクト
+		"/click": handler.ClickHandler,
+
+		// 広告の配信面へのリダイレクト
 		"/conversion": handler.ConversionHandler,
 	}
 

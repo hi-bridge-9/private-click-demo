@@ -12,9 +12,9 @@ import (
 	"strings"
 
 	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/blind_sign"
-	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/model"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/public_token"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database/model"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
 )
 
