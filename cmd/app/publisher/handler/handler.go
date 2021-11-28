@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/blind_sign"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/model"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/app/publisher/public_token"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
@@ -130,23 +132,19 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		log.Printf("Failed connect to DB: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
+	var report *model.Report
+	if err := json.NewDecoder(r.Body).Decode(report); err != nil {
+		log.Printf("Invalid request body format: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	defer db.Close()
 
-	insert := database.GenerateInsertReportQuery(r)
-	_, err = db.Exec(insert)
-	if err != nil {
-		log.Printf("Failed report data insert to DB: %v", err)
+	if err := database.InsertReport(report, r.Referer(), r.Host); err != nil {
+		log.Printf("Failed insert report to DB: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("Success report data insert to DB")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -164,22 +162,11 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		log.Printf("Failed connect to DB: %v", err)
+	if err := database.InsertPublicToken(token, r.Referer(), r.Host); err != nil {
+		log.Printf("Failed insert public token to DB: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	defer db.Close()
-
-	insert := database.GenerateInsertPublicTokenQuery(token, r)
-	_, err = db.Exec(insert)
-	if err != nil {
-		log.Printf("Failed public token insert to DB: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	log.Println("Success public token insert to DB")
 
 	resp := fmt.Sprintf("{\"token_public_key\": \"%s\"}", token)
 
@@ -196,9 +183,14 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg, err := base64.RawURLEncoding.DecodeString(
-		r.FormValue("source_unlinkable_token"))
+	var sign *model.Sign
+	if err := json.NewDecoder(r.Body).Decode(sign); err != nil {
+		log.Printf("Invalid request body format: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	msg, err := base64.RawURLEncoding.DecodeString(sign.SourceToken)
 	if err != nil {
 		log.Printf("Failed base64URL decode source token: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -206,23 +198,17 @@ func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	signature, err := blind_sign.Execute(msg)
-
-	db, err := database.Connect()
 	if err != nil {
-		log.Printf("Failed connect to DB: %v", err)
+		log.Printf("Failed blind sign operation: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	defer db.Close()
 
-	insert := database.GenerateInsertUnlinkableTokenQuery(signature, r)
-	_, err = db.Exec(insert)
-	if err != nil {
-		log.Printf("Failed unlinkable token insert to DB: %v", err)
+	if err := database.InsertUnlinkableToken(sign, signature, r.Referer(), r.Host); err != nil {
+		log.Printf("Failed insert report to DB: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	log.Println("Success unlinkable token insert to DB")
 
 	resp := fmt.Sprintf("{\"unlinkable_token\": \"%s\"}", signature)
 
