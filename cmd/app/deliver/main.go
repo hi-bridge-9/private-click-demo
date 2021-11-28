@@ -1,17 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/deliver/handler"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/server"
+)
+
+var (
+	port = os.Getenv("WEB_SERVER_PORTRT")
 )
 
 // SSP起動！！（トリガーオン的な）
 func main() {
-	http.HandleFunc("/delivery/", handler)
-	http.ListenAndServe(":80", nil)
-}
+	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
+		"/delivery":   handler.DeliveryHandler,
+		"/click":      handler.ClickHandler,
+		"/conversion": handler.ConversionHandler,
+	}
 
-func handler(w http.ResponseWriter,  r *http.Request) {
-	fmt.Println("hello world")
+	wb := server.NewWebServer(handlerMap)
+	if err := wb.Start(port); err != nil {
+		log.Fatal(err)
+	}
 
 }

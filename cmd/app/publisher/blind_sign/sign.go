@@ -63,7 +63,7 @@ func blindSign(msg []byte, key *rsa.PrivateKey) ([]byte, error) {
 func generatePrivateKey(pf []byte) (key *rsa.PrivateKey, err error) {
 	block, _ := pem.Decode(pf)
 	if block == nil {
-		return nil, errors.New("invalid private key data")
+		return nil, errors.New("Invalid private key data")
 	}
 
 	if block.Type == "RSA PRIVATE KEY" {
@@ -79,7 +79,7 @@ func generatePrivateKey(pf []byte) (key *rsa.PrivateKey, err error) {
 		var ok bool
 		key, ok = keyInterface.(*rsa.PrivateKey)
 		if !ok {
-			return nil, errors.New("not RSA private key")
+			return nil, errors.New("Not RSA private key")
 		}
 	} else {
 		return nil, errors.Errorf("invalid private key type: %w ", block.Type)

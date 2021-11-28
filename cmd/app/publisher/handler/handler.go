@@ -24,6 +24,12 @@ var (
 )
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	if topPagePath == "" {
 		topPagePath = "../../../web/html/publisher/top.html"
 	}
@@ -44,6 +50,12 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TriggerHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	param := strings.TrimPrefix(r.URL.Path, "/cv-trigger/")
 	li := strings.Split(param, "/")
 
@@ -62,7 +74,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 				li[0],
 				li[1])
 
-			log.Println("Success execute conversion trigger(2)")
+			log.Println("Success execute conversion trigger(value 2)")
 			w.Header().Add("Location", location)
 			w.WriteHeader(http.StatusFound)
 			return
@@ -77,19 +89,25 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 				wellKnown,
 				li[0])
 
-			log.Println("Success execute conversion trigger(1)")
+			log.Println("Success execute conversion trigger(value 1)")
 			w.Header().Add("Location", location)
 			w.WriteHeader(http.StatusFound)
 			return
 		}
 		log.Printf("Ivalid parameter value: trigger-data=%s", li[0])
 	}
-	w.WriteHeader(http.StatusNotFound)
+	w.WriteHeader(http.StatusBadRequest)
 }
 
 func BeaconHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	if beaconPath == "" {
-		beaconPath = "../../../web/image/beacon.gif"
+		beaconPath = "../../../web/image/publisher/beacon.gif"
 	}
 
 	beacon, err := ioutil.ReadFile(beaconPath)
@@ -106,6 +124,12 @@ func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReportHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		log.Printf("Failed connect to DB: %v", err)
@@ -127,6 +151,12 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	token, err := public_token.Generate()
 	if err != nil {
 		log.Printf("Failed generate public token: %v", err)
@@ -160,6 +190,12 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		log.Printf("Invalid request method: %v", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	msg, err := base64.RawURLEncoding.DecodeString(
 		r.FormValue("source_unlinkable_token"))
 
