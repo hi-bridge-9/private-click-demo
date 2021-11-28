@@ -27,7 +27,7 @@ var (
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -53,7 +53,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 
 func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -103,7 +103,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 
 func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -127,7 +127,7 @@ func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 
 func ReportHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -151,7 +151,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -179,7 +179,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
-		log.Printf("Invalid request method: %v", r.Method)
+		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
