@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/database/model"
 )
@@ -41,7 +42,7 @@ func InsertReport(r *model.Report, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertReportQuery(r, referer, host)
+	insert := generateInsertReportQuery(r, referer, host, strings.TrimRight(host, ".test"))
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed report data insert to DB: %w", err)
@@ -51,8 +52,8 @@ func InsertReport(r *model.Report, referer, host string) error {
 	return nil
 }
 
-func generateInsertReportQuery(r *model.Report, referer, host string) string {
-	return fmt.Sprintf("INSERT INTO publisher_report("+
+func generateInsertReportQuery(r *model.Report, referer, host, member string) string {
+	return fmt.Sprintf("INSERT INTO %s_report("+
 		"source_engagement_type,"+
 		"source_site,"+
 		"source_id,"+
@@ -64,6 +65,7 @@ func generateInsertReportQuery(r *model.Report, referer, host string) string {
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s',%d,'%s',%d,%d,'%s','%s','%s','%s')",
+		member,
 		r.EngagementType,
 		r.SourceSite,
 		r.SourceId,
@@ -83,7 +85,7 @@ func InsertPublicToken(pt string, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertPublicTokenQuery(pt, referer, host)
+	insert := generateInsertPublicTokenQuery(pt, referer, host, strings.TrimRight(host, ".test"))
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed public token insert to DB: %w", err)
@@ -93,12 +95,13 @@ func InsertPublicToken(pt string, referer, host string) error {
 	return nil
 }
 
-func generateInsertPublicTokenQuery(pt string, referer, host string) string {
-	return fmt.Sprintf("INSERT INTO publisher_public_token("+
+func generateInsertPublicTokenQuery(pt string, referer, host, member string) string {
+	return fmt.Sprintf("INSERT INTO %s_public_token("+
 		"token_public_key,"+
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s')",
+		member,
 		pt,
 		referer,
 		host)
@@ -111,7 +114,7 @@ func InsertUnlinkableToken(s *model.Source, ut, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertUnlinkableTokenQuery(s, ut, referer, host)
+	insert := generateInsertUnlinkableTokenQuery(s, ut, referer, host, strings.TrimRight(host, ".test"))
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed unlinkable token insert to DB: %w", err)
@@ -121,8 +124,8 @@ func InsertUnlinkableToken(s *model.Source, ut, referer, host string) error {
 	return nil
 }
 
-func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host string) string {
-	return fmt.Sprintf("INSERT INTO publisher_unlinkable_token("+
+func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host, member string) string {
+	return fmt.Sprintf("INSERT INTO %s_unlinkable_token("+
 		"source_engagement_type,"+
 		"source_nonce,"+
 		"source_unlinkable_token,"+
@@ -131,6 +134,7 @@ func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host strin
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s',%d,'%s','%s','%s')",
+		member,
 		s.EngagementType,
 		s.Nonce,
 		s.SourceToken,
