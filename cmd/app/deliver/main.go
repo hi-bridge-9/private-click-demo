@@ -29,5 +29,6 @@ func main() {
 	if err := wb.Start(port); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Web serever start")
 
 }

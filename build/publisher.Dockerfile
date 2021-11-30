@@ -10,5 +10,5 @@ FROM golang:1.15.7-alpine
 COPY --from=build /temp/main /main
 COPY key_pair/ ./key_pair
 COPY web/html/publisher/ ./web
-COPY web/image/ ./web
+COPY web/image/publisher/ ./web
 CMD [ "/main" ]

@@ -1,16 +1,27 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/kyu-takahahsi/private-click-demo/cmd/app/advertiser/handler"
+	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/server"
 )
 
-// SSP起動！！（トリガーオン的な）
-func main() {
-	http.HandleFunc("/advertiser/", handler)
-	http.ListenAndServe(":80", nil)
-}
+var (
+	port = os.Getenv("WEB_SERVER_PORT")
+)
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hello world")
+func main() {
+	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
+		"/lp":  handler.LandingPageHandler,
+		"/cv/": handler.CVPageHandler,
+	}
+
+	wb := server.NewWebServer(handlerMap)
+	if err := wb.Start(port); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Web server start")
 }

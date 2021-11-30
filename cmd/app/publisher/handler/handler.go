@@ -26,14 +26,10 @@ var (
 )
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
-	}
-
-	if topPagePath == "" {
-		topPagePath = "../../../web/html/publisher/top.html"
 	}
 
 	t, err := template.ParseFiles(topPagePath)
@@ -52,7 +48,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TriggerHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -102,14 +98,10 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BeaconHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
-	}
-
-	if beaconPath == "" {
-		beaconPath = "../../../web/image/publisher/beacon.gif"
 	}
 
 	beacon, err := ioutil.ReadFile(beaconPath)
@@ -126,7 +118,7 @@ func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReportHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
+	if r.Method != "POST" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -150,7 +142,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -178,7 +170,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
+	if r.Method != "POST" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return

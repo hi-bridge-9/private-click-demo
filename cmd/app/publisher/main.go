@@ -20,7 +20,7 @@ func main() {
 	// リクエスト時のパスとハンドラーのマッピング
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
 		// 広告配信面の返却
-		"/top-page/": handler.TopPageHandler,
+		"/top-page": handler.TopPageHandler,
 
 		// CVトリガーリダイレクト実行（CVタグからのリクエスト）
 		"/cv-trigger/": handler.TriggerHandler,

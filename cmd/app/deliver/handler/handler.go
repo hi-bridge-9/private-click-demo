@@ -4,19 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/kyu-takahahsi/private-click-demo/cmd/app/deliver/ad"
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
 )
 
-var (
-	LPPagePath = os.Getenv("LP_PAGE_DIR_PATH")
-	CVPagePath = os.Getenv("CV_PAGE_DIR_PATH")
-)
-
 func DeliveryHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -38,7 +32,7 @@ func DeliveryHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ClickHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -57,7 +51,7 @@ func ClickHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ConversionHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return

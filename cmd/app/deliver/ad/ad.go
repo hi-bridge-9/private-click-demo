@@ -12,12 +12,12 @@ import (
 
 var (
 	imageLink   = os.Getenv("")
-	width       = os.Getenv("")
-	height      = os.Getenv("")
+	width       = os.Getenv("450")
+	height      = os.Getenv("450")
 	clickServer = os.Getenv("CLICK_SERVER_DOMAIN")
 	lp          = os.Getenv("ADVERTISER_LP_PAGE")
-	href        = fmt.Sprintf("%s/click?lp=%s/pcm/lp", clickServer, lp)
-	cvLocation  = os.Getenv("")
+	href        = fmt.Sprintf("%s/click?lp=%s", clickServer, lp)
+	cvLocation  = os.Getenv("CV_LOCATION_DOMAIN")
 	sourceId    = RandDigit(256) // 0〜255
 	nonce       = RandStr(16)    // 16byte
 	info        = []string{imageLink, width, height, href, lp, cvLocation, string(sourceId), nonce}

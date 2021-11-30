@@ -13,9 +13,6 @@ var (
 )
 
 func Generate() (string, error) {
-	if filePath == "" {
-		filePath = "../../../key_pair/private-key.pem"
-	}
 	pem, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return "", fmt.Errorf("Invalid file's path: %w", err)
