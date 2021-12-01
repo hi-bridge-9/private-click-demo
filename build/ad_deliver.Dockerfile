@@ -8,5 +8,4 @@ RUN go build -o ./main
 
 FROM golang:1.15.7-alpine
 COPY --from=build /temp/main /main
-COPY web/js/ad_deliver/ ./web
 CMD [ "/main" ]
