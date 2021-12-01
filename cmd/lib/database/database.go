@@ -42,7 +42,30 @@ func InsertReport(r *model.Report, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertReportQuery(r, referer, host, strings.TrimRight(host, ".test"))
+	char := strings.TrimRight(host, ".test")
+
+	init := fmt.Sprintf("CREATE TABLE IF NOT EXISTS pcm.%s_report ("+
+		"id INT AUTO_INCREMENT,"+
+		"source_engagement_type VARCHAR(10),"+
+		"source_site VARCHAR(30),"+
+		"source_id INT,"+
+		"attributed_on_site VARCHAR(30),"+
+		"trigger_data INT,"+
+		"version INT,"+
+		"secret_token VARCHAR(100),"+
+		"secret_token_signature VARCHAR(100),"+
+		"refere VARCHAR(30),"+
+		"host VARCHAR(30)"+
+		"date DATETIME DEFAULT CURRENT_TIMESTAMP,"+
+		"PRIMARY KEY (id)"+
+		");", char)
+
+	_, err = db.Exec(init)
+	if err != nil {
+		return fmt.Errorf("Failed init report table: %w", err)
+	}
+
+	insert := generateInsertReportQuery(r, referer, host, char)
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed report data insert to DB: %w", err)
@@ -52,8 +75,8 @@ func InsertReport(r *model.Report, referer, host string) error {
 	return nil
 }
 
-func generateInsertReportQuery(r *model.Report, referer, host, member string) string {
-	return fmt.Sprintf("INSERT INTO %s_report("+
+func generateInsertReportQuery(r *model.Report, referer, host, char string) string {
+	return fmt.Sprintf("INSERT INTO pcm.%s_report("+
 		"source_engagement_type,"+
 		"source_site,"+
 		"source_id,"+
@@ -65,7 +88,7 @@ func generateInsertReportQuery(r *model.Report, referer, host, member string) st
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s',%d,'%s',%d,%d,'%s','%s','%s','%s')",
-		member,
+		char,
 		r.EngagementType,
 		r.SourceSite,
 		r.SourceId,
@@ -85,7 +108,22 @@ func InsertPublicToken(pt string, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertPublicTokenQuery(pt, referer, host, strings.TrimRight(host, ".test"))
+	char := strings.TrimRight(host, ".test")
+
+	init := fmt.Sprintf("CREATE TABLE IF NOT EXISTS pcm.%s_public_token ("+
+		"id INT AUTO_INCREMENT,"+
+		"token_public_key VARCHAR(100),"+
+		"host VARCHAR(30)"+
+		"date DATETIME DEFAULT CURRENT_TIMESTAMP,"+
+		"PRIMARY KEY (id)"+
+		");", char)
+
+	_, err = db.Exec(init)
+	if err != nil {
+		return fmt.Errorf("Failed init public token table: %w", err)
+	}
+
+	insert := generateInsertPublicTokenQuery(pt, referer, host, char)
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed public token insert to DB: %w", err)
@@ -95,13 +133,13 @@ func InsertPublicToken(pt string, referer, host string) error {
 	return nil
 }
 
-func generateInsertPublicTokenQuery(pt string, referer, host, member string) string {
-	return fmt.Sprintf("INSERT INTO %s_public_token("+
+func generateInsertPublicTokenQuery(pt string, referer, host, char string) string {
+	return fmt.Sprintf("INSERT INTO pcm.%s_public_token("+
 		"token_public_key,"+
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s')",
-		member,
+		char,
 		pt,
 		referer,
 		host)
@@ -114,7 +152,27 @@ func InsertUnlinkableToken(s *model.Source, ut, referer, host string) error {
 	}
 	defer db.Close()
 
-	insert := generateInsertUnlinkableTokenQuery(s, ut, referer, host, strings.TrimRight(host, ".test"))
+	char := strings.TrimRight(host, ".test")
+
+	init := fmt.Sprintf("CREATE TABLE IF NOT EXISTS pcm.%s_unlinkable_token ("+
+		"id INT AUTO_INCREMENT,"+
+		"source_engagement_type VARCHAR(10),"+
+		"source_nonce VARCHAR(30),"+
+		"source_unlinkable_token VARCHAR(100),"+
+		"version INT,"+
+		"unlinkable_token VARCHAR(100),"+
+		"refere VARCHAR(30),"+
+		"host VARCHAR(30)"+
+		"date DATETIME DEFAULT CURRENT_TIMESTAMP,"+
+		"PRIMARY KEY (id)"+
+		");", char)
+
+	_, err = db.Exec(init)
+	if err != nil {
+		return fmt.Errorf("Failed init report table: %w", err)
+	}
+
+	insert := generateInsertUnlinkableTokenQuery(s, ut, referer, host, char)
 	_, err = db.Exec(insert)
 	if err != nil {
 		return fmt.Errorf("Failed unlinkable token insert to DB: %w", err)
@@ -124,8 +182,8 @@ func InsertUnlinkableToken(s *model.Source, ut, referer, host string) error {
 	return nil
 }
 
-func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host, member string) string {
-	return fmt.Sprintf("INSERT INTO %s_unlinkable_token("+
+func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host, char string) string {
+	return fmt.Sprintf("INSERT INTO pcm.%s_unlinkable_token("+
 		"source_engagement_type,"+
 		"source_nonce,"+
 		"source_unlinkable_token,"+
@@ -134,7 +192,7 @@ func generateInsertUnlinkableTokenQuery(s *model.Source, ut, referer, host, memb
 		"refere,"+
 		"host"+
 		")VALUES('%s','%s','%s',%d,'%s','%s','%s')",
-		member,
+		char,
 		s.EngagementType,
 		s.Nonce,
 		s.SourceToken,
