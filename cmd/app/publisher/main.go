@@ -40,10 +40,9 @@ func main() {
 		// -------------------------------------
 	}
 
-	// webサーバー起動
+	log.Println("Web serever start")
 	ws := server.NewWebServer(handlerMap)
 	if err := ws.Start(port); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Web server start")
 }

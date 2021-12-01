@@ -14,14 +14,18 @@ var (
 )
 
 func main() {
+	// リクエスト時のパスとハンドラーのマッピング
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
-		"/lp":  handler.LandingPageHandler,
+		// 広告主のLPを返却
+		"/lp": handler.LandingPageHandler,
+
+		// 広告主のCV地点ページを返却
 		"/cv/": handler.CVPageHandler,
 	}
 
+	log.Println("Web serever start")
 	wb := server.NewWebServer(handlerMap)
 	if err := wb.Start(port); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Web server start")
 }

@@ -25,10 +25,9 @@ func main() {
 		"/conversion": handler.ConversionHandler,
 	}
 
+	log.Println("Web serever start")
 	wb := server.NewWebServer(handlerMap)
 	if err := wb.Start(port); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Web serever start")
-
 }
