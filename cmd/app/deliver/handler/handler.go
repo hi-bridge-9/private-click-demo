@@ -9,7 +9,7 @@ import (
 	"github.com/kyu-takahahsi/private-click-demo/cmd/lib/validation"
 )
 
-func DeliveryHandler(w http.ResponseWriter, r *http.Request) {
+func Delivery(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -31,7 +31,7 @@ func DeliveryHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func ClickHandler(w http.ResponseWriter, r *http.Request) {
+func Click(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -50,7 +50,7 @@ func ClickHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func ConversionHandler(w http.ResponseWriter, r *http.Request) {
+func Conversion(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)

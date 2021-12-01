@@ -25,7 +25,7 @@ var (
 	wellKnown   = "/.well-known/private-click-measurement"
 )
 
-func TopPageHandler(w http.ResponseWriter, r *http.Request) {
+func TopPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -47,7 +47,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Success return html template")
 }
 
-func TriggerHandler(w http.ResponseWriter, r *http.Request) {
+func TriggerRedirect(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -97,7 +97,7 @@ func TriggerHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusBadRequest)
 }
 
-func BeaconHandler(w http.ResponseWriter, r *http.Request) {
+func Beacon(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -117,7 +117,7 @@ func BeaconHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func ReportHandler(w http.ResponseWriter, r *http.Request) {
+func Report(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -141,7 +141,7 @@ func ReportHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
+func PublicToken(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -169,7 +169,7 @@ func PublicTokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func BlindSignHandler(w http.ResponseWriter, r *http.Request) {
+func BlindSign(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)

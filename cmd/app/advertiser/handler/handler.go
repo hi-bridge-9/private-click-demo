@@ -20,7 +20,7 @@ var (
 	Publisher         = os.Getenv("PUBLISHER_DOMAIN")
 )
 
-func LandingPageHandler(w http.ResponseWriter, r *http.Request) {
+func LandingPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -43,7 +43,7 @@ func LandingPageHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Success return template file")
 }
 
-func CVPageHandler(w http.ResponseWriter, r *http.Request) {
+func CVPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Printf("Invalid request method: %v", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -75,7 +75,7 @@ func CVPageHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Success return template file")
 }
 
-func ReportHandler(w http.ResponseWriter, r *http.Request) {
+func Report(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Printf("Invalid request method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)

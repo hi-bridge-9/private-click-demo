@@ -16,13 +16,13 @@ var (
 func main() {
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
 		// 広告情報の返却
-		"/delivery": handler.DeliveryHandler,
+		"/delivery": handler.Delivery,
 
 		// 広告遷移先へのリダイレクト
-		"/click": handler.ClickHandler,
+		"/click": handler.Click,
 
 		// 広告の配信面へのリダイレクト
-		"/conversion": handler.ConversionHandler,
+		"/conversion": handler.Conversion,
 	}
 
 	log.Println("Web serever start")

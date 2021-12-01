@@ -17,10 +17,10 @@ func main() {
 	// リクエスト時のパスとハンドラーのマッピング
 	handlerMap := map[string]func(w http.ResponseWriter, r *http.Request){
 		// 広告主のLPを返却
-		"/lp": handler.LandingPageHandler,
+		"/lp": handler.LandingPage,
 
 		// 広告主のCV地点ページを返却
-		"/cv/": handler.CVPageHandler,
+		"/cv/": handler.CVPage,
 	}
 
 	log.Println("Web serever start")
