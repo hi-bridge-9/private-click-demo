@@ -17,6 +17,7 @@ var (
 	conversionDirPath = os.Getenv("CV_PAGE_DIR_PATH")
 	Advertiser        = os.Getenv("ADVERTISER_DOMAIN")
 	AdDeliver         = os.Getenv("AD_DELIVER_DOMAIN")
+	Publisher         = os.Getenv("PUBLISHER_DOMAIN")
 )
 
 func LandingPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,9 +61,11 @@ func CVPageHandler(w http.ResponseWriter, r *http.Request) {
 	if err := t.Execute(w, struct {
 		AdDeliver  string
 		Advertiser string
+		Publisher  string
 	}{
 		AdDeliver:  Advertiser,
 		Advertiser: Advertiser,
+		Publisher:  Publisher,
 	}); err != nil {
 		log.Printf("Failed return template file: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

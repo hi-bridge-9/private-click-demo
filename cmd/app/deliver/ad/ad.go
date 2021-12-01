@@ -11,16 +11,16 @@ import (
 )
 
 var (
-	imageLink   = os.Getenv("")
-	width       = os.Getenv("450")
-	height      = os.Getenv("450")
-	clickServer = os.Getenv("CLICK_SERVER_DOMAIN")
-	lp          = os.Getenv("ADVERTISER_LP_PAGE")
-	href        = fmt.Sprintf("%s/click?lp=%s", clickServer, lp)
-	cvLocation  = os.Getenv("CV_LOCATION_DOMAIN")
-	sourceId    = RandDigit(256) // 0〜255
-	nonce       = RandStr(16)    // 16byte
-	info        = []string{imageLink, width, height, href, lp, cvLocation, string(sourceId), nonce}
+	imageURL   = os.Getenv("IMAGE_URL")
+	width      = os.Getenv("IMAGE_WIDTH")
+	height     = os.Getenv("IMAGE_HEIGHT")
+	adDeliver  = os.Getenv("AD_DELIVER_DOMAIN")
+	lp         = os.Getenv("ADVERTISER_LP_PAGE")
+	href       = fmt.Sprintf("%s/click?lp=%s", adDeliver, lp)
+	cvLocation = os.Getenv("CV_LOCATION_DOMAIN")
+	sourceId   = RandDigit(256) // 0〜255
+	nonce      = RandStr(16)    // 16byte
+	info       = []string{imageURL, width, height, href, lp, cvLocation, string(sourceId), nonce}
 )
 
 func Generate(ua string) (string, error) {
@@ -28,13 +28,15 @@ func Generate(ua string) (string, error) {
 		return "", errors.New("Not enough ad information")
 	}
 
-	imgTag := fmt.Sprintf("<img src=\"%s\" width=\"%s\" height=\"%s\">", imageLink, width, height)
+	imgTag := fmt.Sprintf("<img src=\"%s\" width=\"%s\" height=\"%s\">", imageURL, width, height)
 	if validation.IsSafari15(ua) {
-		return fmt.Sprintf("<a href=\"%s\" attributiondestination=\"%s\""+
-			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, sourceId, nonce, imgTag), nil
+		aTag := fmt.Sprintf("<a href=\"%s\" attributiondestination=\"%s\""+
+			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, sourceId, nonce, imgTag)
+		return fmt.Sprintf("Callback({'ads': '%s'});", aTag), nil
 	}
-	return fmt.Sprintf("<a href=\"%s\" attributeon=\"%s\" attributionsourceid=\"%d\">%s</a>",
-		href, cvLocation, sourceId, imgTag), nil
+	aTag := fmt.Sprintf("<a href=\"%s\" attributeon=\"%s\" attributionsourceid=\"%d\">%s</a>",
+		href, cvLocation, sourceId, imgTag)
+	return fmt.Sprintf("Callback({'ads': '%s'});", aTag), nil
 }
 
 func RandDigit(n int) int {
