@@ -18,9 +18,7 @@ var (
 	lp         = os.Getenv("ADVERTISER_LP_PAGE")
 	href       = fmt.Sprintf("%s/click?lp=%s", adDeliver, lp)
 	cvLocation = os.Getenv("CV_LOCATION_DOMAIN")
-	sourceId   = RandDigit(256) // 0〜255
-	nonce      = RandStr(16)    // 16byte
-	info       = []string{imageURL, width, height, href, lp, cvLocation, string(sourceId), nonce}
+	info       = []string{imageURL, width, height, href, lp, cvLocation}
 )
 
 func Generate(ua string) (string, error) {
@@ -31,10 +29,10 @@ func Generate(ua string) (string, error) {
 	imgTag := fmt.Sprintf("<img src=\"%s\" width=\"%s\" height=\"%s\">", imageURL, width, height)
 	if validation.IsSafari15(ua) {
 		return fmt.Sprintf("<a href=\"%s\" attributiondestination=\"%s\""+
-			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, sourceId, nonce, imgTag), nil
+			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, RandDigit(256), RandStr(16), imgTag), nil
 	} else {
 		return fmt.Sprintf("<a href=\"%s\" attributeon=\"%s\" attributionsourceid=\"%d\">%s</a>",
-			href, cvLocation, sourceId, imgTag), nil
+			href, cvLocation, RandDigit(256), imgTag), nil
 	}
 }
 

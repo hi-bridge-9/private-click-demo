@@ -24,6 +24,7 @@ func Delivery(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := fmt.Sprintf("Callback({'ads': '%s'});", adTag)
+	log.Printf("response: %s", resp)
 
 	log.Println("Success return ad callback function")
 	w.Write([]byte(resp))
