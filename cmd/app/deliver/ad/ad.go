@@ -30,13 +30,12 @@ func Generate(ua string) (string, error) {
 
 	imgTag := fmt.Sprintf("<img src=\"%s\" width=\"%s\" height=\"%s\">", imageURL, width, height)
 	if validation.IsSafari15(ua) {
-		aTag := fmt.Sprintf("<a href=\"%s\" attributiondestination=\"%s\""+
-			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, sourceId, nonce, imgTag)
-		return fmt.Sprintf("Callback({'ads': '%s'});", aTag), nil
+		return fmt.Sprintf("<a href=\"%s\" attributiondestination=\"%s\""+
+			"attributionsourceid=%d attributionsourcenonce=\"%s\">%s</a>", href, cvLocation, sourceId, nonce, imgTag), nil
+	} else {
+		return fmt.Sprintf("<a href=\"%s\" attributeon=\"%s\" attributionsourceid=\"%d\">%s</a>",
+			href, cvLocation, sourceId, imgTag), nil
 	}
-	aTag := fmt.Sprintf("<a href=\"%s\" attributeon=\"%s\" attributionsourceid=\"%d\">%s</a>",
-		href, cvLocation, sourceId, imgTag)
-	return fmt.Sprintf("Callback({'ads': '%s'});", aTag), nil
 }
 
 func RandDigit(n int) int {

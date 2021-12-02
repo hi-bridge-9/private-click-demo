@@ -54,9 +54,9 @@ services:
     environment:
       LANDING_PAGE_FILE_PATH: ./web/lp.html
       CV_PAGE_DIR_PATH: ./web/cv/
-      ADVERTISER_DOMAIN: http://advertiser.test
-      AD_DELIVER_DOMAIN: http://ad-deliver.test
-      PUBLISHER_DOMAIN: http://publisher.test
+      ADVERTISER_DOMAIN: "http://advertiser.test"
+      AD_DELIVER_DOMAIN: "http://ad-deliver.test"
+      PUBLISHER_DOMAIN: "http://publisher.test"
       WEB_SERVER_PORT: 80
       MYSQL_DATABASE: database
       MYSQL_USER: user
