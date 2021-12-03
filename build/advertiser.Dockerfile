@@ -1,7 +1,7 @@
 FROM golang:1.15.7-alpine as build
 RUN apk update && apk add git
 WORKDIR /temp
-COPY cmd/app/deliver ./
+COPY cmd/app/advertiser ./
 COPY go.mod go.sum ./
 RUN go mod download
 RUN go build -o ./main
