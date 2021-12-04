@@ -1,5 +1,26 @@
 version: "3.4"
 services:
+  # SSL化
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - ad_deliver
+      - publisher
+      - advertiser
+    restart: always
+    volumes:
+      - ../ssl/:/var/lib/https-portal/
+    environment:
+      # FORCE_RENEW: 'true'
+      DOMAINS: 'ad-deliver.test -> http://ad_deliver, publisher.test ->
+        http://publisher, advertiser.test -> http://advertiser'
+      STAGE: 'local'
+    networks:
+      - app_net
+
   # 広告配信業者
   ad_deliver:
     build:
@@ -11,13 +32,14 @@ services:
       IMAGE_WIDTH: 450
       IMAGE_HEIGHT: 450
       ADVERTISER_LP_PAGE: http://advertiser.test/lp
+      PUBLISHER_DOMAIN: http://publisher.test
       AD_DELIVER_DOMAIN: http://ad-deliver.test
       CV_LOCATION_DOMAIN: http://advertiser.test
       WEB_SERVER_PORT: 80
     networks:
       - app_net
     ports:
-      - '127.0.0.2:80:80'
+      - '127.0.0.2:8080:80'
 
   # メディア
   publisher:
@@ -41,7 +63,7 @@ services:
     networks:
       - app_net
     ports:
-      - '127.0.0.3:80:80'
+      - '127.0.0.3:8080:80'
     depends_on:
       - db
 
@@ -67,7 +89,7 @@ services:
     networks:
       - app_net
     ports:
-      - '127.0.0.4:80:80'
+      - '127.0.0.4:8080:80'
     depends_on:
       - db
 
@@ -88,7 +110,7 @@ services:
     networks:
       - app_net
     ports:
-      - '127.0.0.1:3306:3306'
+      - '3306:3306'
 
 # ネットワーク
 networks:
